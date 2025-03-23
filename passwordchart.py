@@ -15,11 +15,11 @@ def generate_chart(seed: int) -> dict:
     
     chart = {}
     for label in string.ascii_uppercase + string.digits:
-        chart[label] = "".join(random.choices(characters, k=random.randint(1, 3)))
+        chart[label] = "".join(random.choices(characters, k=random.randint(2, 3)))
     
     return chart
 
-def save_chart_as_image(chart: dict, filename: str, cell_width: int = 100, cell_height: int = 50):
+def save_chart_as_image(chart: dict, filename: str, cell_width: int = 50, cell_height: int = 25):
     labels = list(chart.keys())
     rows = (len(labels) + 3) // 4  # Distribute over 4 columns
     img_width, img_height = 4 * cell_width, rows * cell_height
@@ -28,7 +28,7 @@ def save_chart_as_image(chart: dict, filename: str, cell_width: int = 100, cell_
     draw = ImageDraw.Draw(img)
     
     try:
-        font = ImageFont.truetype("arial.ttf", cell_height // 2)
+        font = ImageFont.truetype("cour.ttf", cell_height // 2)
     except:
         font = ImageFont.load_default()
     
@@ -69,7 +69,7 @@ def save_chart():
 
 # GUI Setup
 root = tk.Tk()
-root.title("Password Chart Generator")
+root.title("Password Chart Generator v1.1.1")
 
 tk.Label(root, text="Enter chart selection phrase:").pack()
 phrase_entry = tk.Entry(root)
