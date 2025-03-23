@@ -69,7 +69,7 @@ def save_chart():
 
 # GUI Setup
 root = tk.Tk()
-root.title("Password Chart Generator v1.1.1")
+root.title("Password Chart Generator v1.2.2")
 
 tk.Label(root, text="Enter chart selection phrase:").pack()
 phrase_entry = tk.Entry(root)
@@ -82,6 +82,14 @@ save_button = tk.Button(root, text="Save Chart", command=save_chart)
 save_button.pack()
 
 chart_label = tk.Label(root)
+def display_empty_chart():
+    empty_chart = {label: "" for label in string.ascii_uppercase + string.digits}
+    img = save_chart_as_image(empty_chart, "temp_chart.png")
+    img = img.resize((400, 400))  # Resize for display
+    img = ImageTk.PhotoImage(img)
+    chart_label.config(image=img)
+    chart_label.image = img
+display_empty_chart()
 chart_label.pack()
 
 root.mainloop()
