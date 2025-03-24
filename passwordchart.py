@@ -15,11 +15,11 @@ def generate_chart(seed: int) -> dict:
     
     chart = {}
     for label in string.ascii_uppercase + string.digits:
-        chart[label] = "".join(random.choices(characters, k=random.randint(2, 3)))
+        chart[label] = "".join(random.choices(characters, k=random.randint(2, 4)))
     
     return chart
 
-def save_chart_as_image(chart: dict, filename: str, cell_width: int = 50, cell_height: int = 25):
+def save_chart_as_image(chart: dict, filename: str, cell_width: int = 150, cell_height: int = 50):
     labels = list(chart.keys())
     rows = (len(labels) + 3) // 4  # Distribute over 4 columns
     img_width, img_height = 4 * cell_width, rows * cell_height
@@ -48,7 +48,6 @@ def generate_and_display_chart():
     seed = generate_seed(phrase)
     chart = generate_chart(seed)
     img = save_chart_as_image(chart, "temp_chart.png")
-    img = img.resize((400, 400))  # Resize for display
     img = ImageTk.PhotoImage(img)
     chart_label.config(image=img)
     chart_label.image = img
@@ -69,7 +68,7 @@ def save_chart():
 
 # GUI Setup
 root = tk.Tk()
-root.title("Password Chart Generator v1.2.2")
+root.title("Password Chart Generator v1.6.22")
 
 tk.Label(root, text="Enter chart selection phrase:").pack()
 phrase_entry = tk.Entry(root)
@@ -85,11 +84,33 @@ chart_label = tk.Label(root)
 def display_empty_chart():
     empty_chart = {label: "" for label in string.ascii_uppercase + string.digits}
     img = save_chart_as_image(empty_chart, "temp_chart.png")
-    img = img.resize((400, 400))  # Resize for display
     img = ImageTk.PhotoImage(img)
     chart_label.config(image=img)
     chart_label.image = img
 display_empty_chart()
 chart_label.pack()
+
+decryption_entry = tk.Entry(root, width=50)
+decryption_label = tk.Entry(root, state='readonly', width=50)
+
+def encrypt_text(event):
+    phrase = phrase_entry.get()
+    if not phrase:
+        return
+    seed = generate_seed(phrase)
+    chart = generate_chart(seed)
+    
+    input_text = decryption_entry.get().upper()
+    encrypted_text = ''.join(chart.get(char, char) for char in input_text)
+    decryption_label.config(state='normal')
+    decryption_label.delete(0, tk.END)
+    decryption_label.insert(0, encrypted_text)
+    decryption_label.config(state='readonly')
+
+decryption_label_text = tk.Label(root, text="So if you type this, your password would be:")
+decryption_label_text.pack()
+decryption_entry.pack()
+decryption_entry.bind('<KeyRelease>', encrypt_text)
+decryption_label.pack()
 
 root.mainloop()
